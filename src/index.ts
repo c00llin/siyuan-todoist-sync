@@ -235,6 +235,15 @@ export default class TodoistSyncPlugin extends Plugin {
                 }
             }
 
+            // Warn if no label is configured (completion sync won't work without it)
+            if (!this.settings.defaultLabel) {
+                showMessage(
+                    (this.i18n.noLabelWarning as string) || "No label configured — completion sync from Todoist won't work",
+                    5000,
+                    "info",
+                );
+            }
+
             // Step 7: Create task in Todoist
             const todoistTask = await this.todoistClient.createTask({
                 content: taskContent,

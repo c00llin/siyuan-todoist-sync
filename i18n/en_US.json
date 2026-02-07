@@ -19,6 +19,7 @@
   "validate": "Validate",
   "apiKeyValid": "API token is valid",
   "apiKeyInvalid": "API token is invalid",
+  "noLabelWarning": "No label configured — completion sync from Todoist won't work",
   "slashKeywords": "Slash Keywords",
   "slashKeywordsDesc": "Comma-separated keywords that trigger the /slash command (e.g. sendtotodoist, todoist, todo, task)"
 }
