@@ -90,7 +90,8 @@ Either way, the block will be:
 ### Automatic Completion Sync
 When you complete a task in Todoist that was sent from SiYuan:
 - The plugin polls Todoist at a configurable interval (default: 5 minutes)
-- Matching tasks are found via the SiYuan link in the Todoist task description
+- Completed tasks are filtered by the configured label (e.g. `siyuan`)
+- The SiYuan block is identified via the `siyuan://blocks/...` link in the Todoist task description
 - The checkbox in SiYuan is automatically ticked and a `✔︎` is added after the link
 
 ## Configuration
