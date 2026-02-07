@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  plugin-dev:
+    build: .
+    container_name: siyuan-todoist-plugin-dev
+    volumes:
+      - .:/workspace
+      - node_modules:/workspace/node_modules
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+
+volumes:
+  node_modules:

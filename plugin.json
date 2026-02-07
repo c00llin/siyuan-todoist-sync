@@ -1,0 +1,23 @@
+{
+  "name": "siyuan-todoist-sync",
+  "author": "Collin Janssen",
+  "url": "https://github.com/c00llin/siyuan-todoist-sync",
+  "version": "0.0.1",
+  "minAppVersion": "2.9.0",
+  "backends": ["all"],
+  "frontends": ["all"],
+  "displayName": {
+    "default": "Todoist Sync"
+  },
+  "description": {
+    "default": "Sync tasks between SiYuan and Todoist"
+  },
+  "readme": {
+    "default": "README.md"
+  },
+  "funding": {
+    "custom": []
+  },
+  "keywords": ["todoist", "task", "sync", "productivity"],
+  "disabledInPublish": false
+}
