@@ -113,8 +113,8 @@ npm run build
 
 ## 许可证
 
-[MIT](LICENSE)
+[MIT](https://github.com/c00llin/siyuan-todoist-sync/blob/main/LICENSE)
 
 ## 更新日志
 
-查看 [CHANGELOG.md](CHANGELOG.md) 了解版本历史。
+查看 [CHANGELOG.md](https://github.com/c00llin/siyuan-todoist-sync/blob/main/CHANGELOG.md) 了解版本历史。

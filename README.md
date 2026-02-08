@@ -113,8 +113,8 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-[MIT](LICENSE)
+[MIT](https://github.com/c00llin/siyuan-todoist-sync/blob/main/LICENSE)
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for release history.
+See [CHANGELOG.md](https://github.com/c00llin/siyuan-todoist-sync/blob/main/CHANGELOG.md) for release history.

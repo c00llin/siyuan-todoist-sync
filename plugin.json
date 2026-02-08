@@ -2,7 +2,7 @@
   "name": "siyuan-todoist-sync",
   "author": "Collin Janssen",
   "url": "https://github.com/c00llin/siyuan-todoist-sync",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "minAppVersion": "2.9.0",
   "backends": ["all"],
   "frontends": ["all"],
@@ -22,5 +22,5 @@
     "custom": []
   },
   "keywords": ["todoist", "task", "sync", "productivity"],
-  "disabledInPublish": false
+  "disabledInPublish": true
 }
