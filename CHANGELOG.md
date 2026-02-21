@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.0.3 (2026-02-21)
+
+- Fix completion sync not ticking checkboxes in SiYuan when tasks are completed in Todoist (#1)
+- Store parent NodeListItem block ID for reliable checkbox lookup
+- Add backward-compatible parent block fallback for existing synced tasks
+- Prevent overlapping sync polls from racing
+
 ## v1.0.2 (2026-02-11)
 
 - Support for Todoist's new API version
