@@ -200,12 +200,15 @@ export default class TodoistSyncPlugin extends Plugin {
     const blockId = blockEl.getAttribute("data-node-id");
     if (!blockId) return;
 
-    // Check DOM to see if this block is already inside a todo list item.
     // When the slash command fires inside a Cmd+L todo, blockEl is the child
-    // paragraph — getBlockKramdown returns plain text without the checkbox,
-    // so we need this DOM-based check to avoid adding a duplicate checkbox.
-    const isAlreadyTodo =
-      blockEl.closest('[data-subtype="t"][data-type="NodeListItem"]') !== null;
+    // paragraph. The NodeListItem parent owns the [ ] checkbox. We store the
+    // parent's ID in Todoist so completion sync can find the correct block.
+    const parentListItem = blockEl.closest<HTMLElement>(
+      '[data-subtype="t"][data-type="NodeListItem"]',
+    );
+    const isAlreadyTodo = parentListItem !== null;
+    const storedBlockId =
+      parentListItem?.getAttribute("data-node-id") ?? blockId;
 
     try {
       // Step 1: Get block kramdown
@@ -295,7 +298,7 @@ export default class TodoistSyncPlugin extends Plugin {
       // Step 7: Create task in Todoist
       const todoistTask = await this.todoistClient.createTask({
         content: taskContent,
-        description: `[\u00BBSiYuan task](siyuan://blocks/${blockId})`,
+        description: `[\u00BBSiYuan task](siyuan://blocks/${storedBlockId})`,
         projectId,
         sectionId,
         labels: this.settings.defaultLabel

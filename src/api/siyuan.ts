@@ -13,3 +13,10 @@ export async function updateBlock(id: string, markdown: string): Promise<any> {
     });
     return response.data;
 }
+
+export async function getParentId(blockId: string): Promise<string | null> {
+    const response = await fetchSyncPost("/api/query/sql", {
+        stmt: `SELECT parent_id FROM blocks WHERE id = '${blockId}'`,
+    });
+    return response.data?.[0]?.parent_id ?? null;
+}

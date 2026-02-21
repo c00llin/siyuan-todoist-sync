@@ -1,9 +1,10 @@
 import { TodoistClient } from "./api/todoist";
-import { getBlockKramdown, updateBlock } from "./api/siyuan";
+import { getBlockKramdown, updateBlock, getParentId } from "./api/siyuan";
 import { markTaskComplete } from "./kramdown";
 
 export class TaskSyncManager {
     private intervalId: ReturnType<typeof setInterval> | null = null;
+    private isPolling = false;
     private todoistClient: TodoistClient;
     private getSettings: () => { lastSyncTime: string; syncInterval: number; defaultLabel: string };
     private saveLastSyncTime: (time: string) => Promise<void>;
@@ -40,6 +41,8 @@ export class TaskSyncManager {
     }
 
     private async pollCompletedTasks(): Promise<void> {
+        if (this.isPolling) return;
+        this.isPolling = true;
         try {
             const settings = this.getSettings();
             if (!settings.lastSyncTime) {
@@ -68,38 +71,57 @@ export class TaskSyncManager {
             await this.saveLastSyncTime(now);
         } catch (error) {
             console.error("[todoist-sync] Error polling completed tasks:", error);
+        } finally {
+            this.isPolling = false;
         }
     }
 
     private async processCompletedTask(task: { description?: string; content?: string }): Promise<void> {
-        // Extract SiYuan block ID from the task description
         const siyuanLinkMatch = task.description?.match(
             /siyuan:\/\/blocks\/([a-zA-Z0-9-]+)/,
         );
-
-        if (!siyuanLinkMatch) {
-            return;
-        }
+        if (!siyuanLinkMatch) return;
 
         const blockId = siyuanLinkMatch[1];
 
         try {
-            const blockData = await getBlockKramdown(blockId);
+            let targetId = blockId;
+            let blockData = await getBlockKramdown(blockId);
             if (!blockData || !blockData.kramdown) {
                 console.warn(`[todoist-sync] Block ${blockId} not found, skipping`);
                 return;
             }
 
-            const kramdown = blockData.kramdown;
+            // If the fetched block has no checkbox, it's a child paragraph inside
+            // a NodeListItem. The [ ] lives on the parent. Walk up one level.
+            // This handles tasks created before the send-side fix stored the
+            // parent NodeListItem's ID.
+            const hasCheckbox = /\[[ x]\]/.test(blockData.kramdown);
+            if (!hasCheckbox) {
+                const parentId = await getParentId(blockId);
+                if (parentId) {
+                    const parentData = await getBlockKramdown(parentId);
+                    if (parentData && /\[ \]/.test(parentData.kramdown)) {
+                        targetId = parentId;
+                        blockData = parentData;
+                    } else {
+                        console.warn(`[todoist-sync] Could not find checkbox block for ${blockId}, skipping`);
+                        return;
+                    }
+                } else {
+                    console.warn(`[todoist-sync] No parent found for block ${blockId}, skipping`);
+                    return;
+                }
+            }
 
-            // Check if already completed
-            if (/\[x\]/.test(kramdown)) {
+            // Already completed
+            if (/\[x\]/.test(blockData.kramdown)) {
                 return;
             }
 
-            const updatedKramdown = markTaskComplete(kramdown);
-            await updateBlock(blockId, updatedKramdown);
-            console.log(`[todoist-sync] Marked block ${blockId} as completed`);
+            const updatedKramdown = markTaskComplete(blockData.kramdown);
+            await updateBlock(targetId, updatedKramdown);
+            console.log(`[todoist-sync] Marked block ${targetId} as completed`);
         } catch (error) {
             console.error(`[todoist-sync] Error processing block ${blockId}:`, error);
         }
